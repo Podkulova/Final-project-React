@@ -16,9 +16,13 @@ interface Student {
   studentId: number;
   studentName: string;
   studentSurname: string;
-  classRoom: string | null;
-  parents: Parent[];
+  classRoom: {
+    classRoomId: number;
+    classRoomName: string;
+    students: (number | Student)[];
+  };
   fullName: string;
+  parents: Parent[]; // Assuming parents are included in the student object
 }
 
 const StudentsTable: React.FC = () => {
@@ -38,7 +42,23 @@ const StudentsTable: React.FC = () => {
 
         console.log("Fetched students data:", data); // Debugging: Log the fetched data
 
-        setStudents(data);
+        // Flatten the structure to get all students
+        const allStudents: Student[] = [];
+
+        data.forEach((student: any) => {
+          if (student.studentId) {
+            allStudents.push(student); // Add the main student
+          }
+          if (student.classRoom && student.classRoom.students) {
+            student.classRoom.students.forEach((s: any) => {
+              if (typeof s === "object" && s.studentId) {
+                allStudents.push(s); // Add nested students
+              }
+            });
+          }
+        });
+
+        setStudents(allStudents);
       } catch (error) {
         setError("Failed to fetch student data.");
         console.error("Failed to fetch student data:", error);
@@ -81,7 +101,7 @@ const StudentsTable: React.FC = () => {
                 <td className="p-2 md:table-cell">{student.studentId}</td>
                 <td className="p-2 md:table-cell">{student.studentName}</td>
                 <td className="p-2 md:table-cell">{student.studentSurname}</td>
-                {/* <td className="p-2 md:table-cell">{student.fullName}</td> */}
+                <td className="p-2 md:table-cell">{student.fullName}</td>
                 <td className="p-2 md:table-cell">
                   <button
                     className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-1 px-2 rounded"
@@ -95,7 +115,7 @@ const StudentsTable: React.FC = () => {
                 <tr className="bg-gray-800 border-b border-gray-700 md:border-none md:table-row">
                   <td colSpan={5} className="p-2">
                     <div className="p-2">
-                      {student.parents.length > 0 ? (
+                      {student.parents && student.parents.length > 0 ? (
                         <>
                           <h3 className="font-medium text-gray-400">Parents:</h3>
                           <ul className="list-disc pl-5">
@@ -104,12 +124,8 @@ const StudentsTable: React.FC = () => {
                                 <div>
                                   <strong>{parent.parentName} {parent.parentSurname}</strong>
                                 </div>
-                                <div className="text-gray-400">
-                                  Email: {parent.parentEmail}
-                                </div>
-                                <div className="text-gray-400">
-                                  Phone: {parent.parentPhone}
-                                </div>
+                                <div className="text-gray-400">Email: {parent.parentEmail}</div>
+                                <div className="text-gray-400">Phone: {parent.parentPhone}</div>
                               </li>
                             ))}
                           </ul>
