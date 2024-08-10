@@ -31,6 +31,13 @@ const StudentsTable: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [expandedStudentId, setExpandedStudentId] = useState<number | null>(null);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const studentsPerPage = 10;
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -74,6 +81,31 @@ const StudentsTable: React.FC = () => {
     setExpandedStudentId((prev) => (prev === studentId ? null : studentId));
   };
 
+  // Filter students based on search query
+  const filteredStudents = students.filter((student) =>
+    student.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    student.studentSurname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    student.classRoom.classRoomName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Calculate the indexes of the first and last student for the current page
+  const indexOfLastStudent = currentPage * studentsPerPage;
+  const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
+
+  // Get the students to be displayed on the current page
+  const currentStudents = filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
   if (loading) {
     return <div className="text-white">Loading...</div>;
   }
@@ -84,24 +116,38 @@ const StudentsTable: React.FC = () => {
 
   return (
     <div className="overflow-x-auto bg-gray-900 text-white p-4">
+      {/* Search Bar */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by student name, surname, or class room"
+          className="p-2 w-full rounded bg-gray-800 text-white border border-gray-600"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1); // Reset to first page on new search
+          }}
+        />
+      </div>
+
       <table className="min-w-full border-collapse block md:table">
         <thead className="block md:table-header-group">
           <tr className="border-b border-gray-700 md:border-none md:table-row">
-            <th className="p-2 text-left font-medium text-gray-400 md:table-cell">ID</th>
+            {/* <th className="p-2 text-left font-medium text-gray-400 md:table-cell">ID</th> */}
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Name</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Surname</th>
-            <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Full Name</th>
+            <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Class Room</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Actions</th>
           </tr>
         </thead>
         <tbody className="block md:table-row-group">
-          {students.map((student) => (
+          {currentStudents.map((student) => (
             <React.Fragment key={student.studentId}>
               <tr className="border-b border-gray-700 md:border-none md:table-row">
-                <td className="p-2 md:table-cell">{student.studentId}</td>
+                {/* <td className="p-2 md:table-cell">{student.studentId}</td> */}
                 <td className="p-2 md:table-cell">{student.studentName}</td>
                 <td className="p-2 md:table-cell">{student.studentSurname}</td>
-                <td className="p-2 md:table-cell">{student.fullName}</td>
+                <td className="p-2 md:table-cell">{student.classRoom.classRoomName}</td>
                 <td className="p-2 md:table-cell">
                   <button
                     className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-1 px-2 rounded"
@@ -141,6 +187,27 @@ const StudentsTable: React.FC = () => {
           ))}
         </tbody>
       </table>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={handlePreviousPage}
+          className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-3 mx-2 rounded"
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <span className="text-white mx-2">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={handleNextPage}
+          className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-3 mx-2 rounded"
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
