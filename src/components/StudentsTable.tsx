@@ -31,7 +31,7 @@ const StudentsTable: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [expandedStudentId, setExpandedStudentId] = useState<number | null>(null);
 
-  console.log(localStorage.getItem('token'));
+//   console.log(localStorage.getItem('token'));
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState<number>(1);

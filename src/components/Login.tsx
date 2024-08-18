@@ -34,11 +34,9 @@ const Login: React.FC = () => {
 
             const data: LoginResponse = await response.json();
 
-            if (typeof window !== 'undefined') {
-                  localStorage.setItem('token', data.jwtToken);
-              }
-
-          console.log(localStorage.token);
+//             if (typeof window !== 'undefined') {
+//                   localStorage.setItem('token', data.jwtToken);
+//               }
 
             // Redirect to the home page
             router.push('/');
