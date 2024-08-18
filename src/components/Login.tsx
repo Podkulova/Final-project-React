@@ -34,10 +34,11 @@ const Login: React.FC = () => {
 
             const data: LoginResponse = await response.json();
 
-            // Store token in localStorage
-            localStorage.setItem('token', data.jwtToken);
+            if (typeof window !== 'undefined') {
+                  localStorage.setItem('token', data.jwtToken);
+              }
 
-              console.log('Toto je ten nas token' + localStorage.getItem('token'));
+          console.log(localStorage.token);
 
             // Redirect to the home page
             router.push('/');
