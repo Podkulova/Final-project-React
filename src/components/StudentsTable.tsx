@@ -52,6 +52,7 @@ const StudentsTable: React.FC = () => {
         console.log("Načtená data studentů:", data); // Pro debugging: Výpis načtených dat
 
         // Zploštění struktury pro získání všech studentů
+        // Flatten the structure to get all students
         const allStudents: Student[] = [];
 
         data.forEach((student: any) => {
@@ -101,6 +102,25 @@ const StudentsTable: React.FC = () => {
   };
 
   // Filtrování studentů na základě vyhledávacího dotazu
+  const handleDeleteClassRoom = async (classRoomId: number) => {
+    try {
+      const response = await fetch(`https://edupage.onrender.com/api/deleteClassRoom/${classRoomId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error deleting classroom: ${response.statusText}`);
+      }
+
+      // Remove the students associated with the deleted classroom from the list
+      setStudents(students.filter(student => student.classRoom.classRoomId !== classRoomId));
+    } catch (error) {
+      setError("Failed to delete classroom.");
+      console.error("Failed to delete classroom:", error);
+    }
+  };
+
+  // Filter students based on search query
   const filteredStudents = students.filter((student) =>
       student.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.studentSurname.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -139,16 +159,24 @@ const StudentsTable: React.FC = () => {
 
   return (
       <div className="overflow-x-auto bg-gray-900 text-white p-4">
+
         {/* Vyhledávací pole */}
         <div className="mb-4">
           <input
               type="text"
               placeholder="Hledat podle jména, příjmení nebo třídy"
-              className="p-2 w-full rounded bg-gray-800 text-white border border-gray-600"
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <input
+              type="text"
+              placeholder="Hledat podle jména studenta, příjmení nebo třídy"
+        className="p-2 w-full rounded bg-gray-800 text-white border border-gray-600"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1); // Reset na první stránku při novém vyhledávání
+                setCurrentPage(1); // Reset to first page on new search
               }}
           />
         </div>
@@ -162,6 +190,9 @@ const StudentsTable: React.FC = () => {
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Třída</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Rodič</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Vymazat</th>
+            <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Detail tříd</th>
+            <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Přidat třídu</th>
+            <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Vymazat třídu</th>
           </tr>
           </thead>
           <tbody className="block md:table-row-group">
@@ -186,6 +217,21 @@ const StudentsTable: React.FC = () => {
                         onClick={() => handleDeleteStudent(student.studentId)}
                     >
                       <FontAwesomeIcon icon={faTimes} className="w-5 h-5"/>
+                        className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-1 px-2 rounded"
+                        onClick={() => toggleParentsVisibility(student.studentId)}
+                    >
+                      {expandedStudentId === student.studentId ? "Skrýt rodiče" : "Ukázat rodiče"}
+                    </button>
+                  </td>
+                  <td className="p-2 md:table-cell">
+                    {/* Add button or functionality to add a class room */}
+                  </td>
+                  <td className="p-2 md:table-cell">
+                    <button
+                        className="bg-red-600 hover:bg-red-800 text-white font-bold py-1 px-2 rounded"
+                        onClick={() => handleDeleteClassRoom(student.classRoom.classRoomId)}
+                    >
+                      Vymazat
                     </button>
                   </td>
                 </tr>
@@ -207,6 +253,28 @@ const StudentsTable: React.FC = () => {
                         ) : (
                             <div>Žádní rodiče k dispozici</div>
                         )}
+                    <tr className="bg-gray-800 border-b border-gray-700 md:border-none md:table-row">
+                      <td colSpan={6} className="p-2">
+                        <div className="p-2">
+                          {student.parents && student.parents.length > 0 ? (
+                              <>
+                                <h3 className="font-medium text-gray-400">Rodiče:</h3>
+                                <ul className="list-disc pl-5">
+                                  {student.parents.map((parent) => (
+                                      <li key={parent.parentId} className="text-gray-300 mb-2">
+                                        <div>
+                                          <strong>{parent.parentName} {parent.parentSurname}</strong>
+                                        </div>
+                                        <div className="text-gray-400">Email: {parent.parentEmail}</div>
+                                        <div className="text-gray-400">Telefon: {parent.parentPhone}</div>
+                                      </li>
+                                  ))}
+                                </ul>
+                              </>
+                          ) : (
+                              <h3 className="font-medium text-gray-400">Rodič nenalezen</h3>
+                          )}
+                        </div>
                       </td>
                     </tr>
                 )}
@@ -214,7 +282,6 @@ const StudentsTable: React.FC = () => {
           ))}
           </tbody>
         </table>
-
         {/* Pagination controls */}
         <div className="flex justify-between items-center mt-4">
           <button
@@ -229,6 +296,22 @@ const StudentsTable: React.FC = () => {
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
               className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-4">
+          <button
+              onClick={handlePreviousPage}
+              className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-3 mx-2 rounded"
+              disabled={currentPage === 1}
+          >
+            Předchozí
+          </button>
+          <span className="text-white mx-2">
+          Stránka {currentPage} z {totalPages}
+        </span>
+          <button
+              onClick={handleNextPage}
+              className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-3 mx-2 rounded"
+              disabled={currentPage === totalPages}
           >
             Další
           </button>
@@ -243,6 +326,7 @@ const StudentsTable: React.FC = () => {
             Zpět
           </button>
         </div>
+
       </div>
   );
 };
