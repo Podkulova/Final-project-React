@@ -41,7 +41,7 @@ const StudentsTable: React.FC = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/student");
+        const response = await fetch("https://edupage.onrender.com/api/student");
         if (!response.ok) {
           throw new Error(`Error fetching data: ${response.statusText}`);
         }
@@ -81,7 +81,7 @@ const StudentsTable: React.FC = () => {
 
   const handleDeleteClassRoom = async (classRoomId: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/deleteClassRoom/${classRoomId}`, {
+      const response = await fetch(`https://edupage.onrender.com/api/deleteClassRoom/${classRoomId}`, {
         method: 'DELETE',
       });
 
