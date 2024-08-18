@@ -133,7 +133,7 @@ const StudentsTable: React.FC = () => {
       <table className="min-w-full border-collapse block md:table">
         <thead className="block md:table-header-group">
           <tr className="border-b border-gray-700 md:border-none md:table-row">
-            {/* <th className="p-2 text-left font-medium text-gray-400 md:table-cell">ID</th> */}
+            { <th className="p-2 text-left font-medium text-gray-400 md:table-cell">ID</th> }
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Name</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Surname</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Class Room</th>
@@ -144,7 +144,7 @@ const StudentsTable: React.FC = () => {
           {currentStudents.map((student) => (
             <React.Fragment key={student.studentId}>
               <tr className="border-b border-gray-700 md:border-none md:table-row">
-                {/* <td className="p-2 md:table-cell">{student.studentId}</td> */}
+                { <td className="p-2 md:table-cell">{student.studentId}</td> }
                 <td className="p-2 md:table-cell">{student.studentName}</td>
                 <td className="p-2 md:table-cell">{student.studentSurname}</td>
                 <td className="p-2 md:table-cell">{student.classRoom.classRoomName}</td>
