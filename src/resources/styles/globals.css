@@ -1,0 +1,73 @@
+.content-margin {
+    margin-top: 10px;
+}
+
+.container {
+    max-width: 900px; /* Zvětšení maximální šířky kontejneru pro lepší zarovnání */
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dvě kolony */
+    gap: 10px; /* Menší mezera mezi položkami */
+    margin-top: 10px;
+}
+
+.image-container {
+    border: 1px solid #ddd; /* Rámeček kolem obrázku */
+    padding: 10px; /* Padding kolem obrázku */
+    text-align: center;
+    border-radius: 8px; /* Zaoblení rámečku */
+    background-color: #f9f9f9; /* Pozadí rámečku */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Jemný stín kolem rámečku */
+    max-width: 300px; /* Zvýšení maximální šířky rámečku */
+    margin: 0 auto; /* Zarovnání rámečku na střed */
+}
+
+.image-container img {
+    max-width: 100%; /* Zajištění, že obrázek se vejde do rámečku */
+    height: auto; /* Automatická výška */
+    border-radius: 4px; /* Zaoblení obrázku */
+    padding: 5px; /* Padding kolem obrázku */
+    display: block;
+    margin: 0 auto; /* Zarovnání obrázku na střed */
+}
+
+.image-container p {
+    margin-top: 10px; /* Mezera nad textem */
+    color: black;
+}
+
+.image-link {
+    text-decoration: none; /* Odebrání podtržení */
+}
+
+.navbar {
+    display: flex;
+    justify-content: center; /* Zarovná obsah do středu */
+    padding: 5px 0; /* Větší padding kolem navigace */
+}
+
+.navbar-brand {
+    font-size: 1.5rem; /* Zvětšení velikosti písma */
+    font-weight: bold; /* Tučné písmo */
+    color: #fff; /* Barva textu (bílá) */
+    text-decoration: none; /* Odebrání podtržení */
+}
+
+.navbar-dark .navbar-brand {
+    color: #fff; /* Zajištění, že text je bílý na tmavém pozadí */
+}
+
+.navbar-nav {
+    display: flex;
+    justify-content: flex-end; /* Zarovnání položek do pravého rohu */
+    gap: 10px;
+}
+
+.nav-link:hover {
+    color: gray; /* Barva textu po najetí myší */
+}
