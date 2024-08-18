@@ -81,7 +81,7 @@ const StudentsTable: React.FC = () => {
 
   const handleDeleteClassRoom = async (classRoomId: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/deleteClassRoom/${classRoomId}`, {
+      const response = await fetch(`https://edupage.onrender.com/api/deleteClassRoom/${classRoomId}`, {
         method: 'DELETE',
       });
 
@@ -153,7 +153,7 @@ const StudentsTable: React.FC = () => {
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Jméno</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Příjmení</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Třída</th>
-            <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Detail rodiče</th>
+            <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Detail tříd</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Přidat třídu</th>
             <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Vymazat třídu</th>
           </tr>
