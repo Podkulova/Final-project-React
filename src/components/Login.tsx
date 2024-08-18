@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; // Updated import
 
 interface LoginResponse {
-    token: string;
+    jwtToken: string;
 }
 
 const Login: React.FC = () => {
