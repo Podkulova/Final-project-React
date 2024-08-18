@@ -1,7 +1,7 @@
 'use client'; // This directive must be at the top
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Updated import
+import { useRouter } from 'next/navigation';
 
 interface LoginResponse {
     jwtToken: string;
@@ -12,7 +12,7 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const router = useRouter(); // Use useRouter from next/navigation
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -34,9 +34,11 @@ const Login: React.FC = () => {
 
             const data: LoginResponse = await response.json();
 
-//             if (typeof window !== 'undefined') {
-//                   localStorage.setItem('token', data.jwtToken);
-//               }
+            // Safely access localStorage
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('token', data.jwtToken);
+                console.log('Token stored:', localStorage.getItem('token'));
+            }
 
             // Redirect to the home page
             router.push('/');
