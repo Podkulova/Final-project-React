@@ -216,7 +216,7 @@ const ClassroomsTable: React.FC = () => {
                     onClick={handleGoToMainPage}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 >
-                    Další
+                    Zpět
                 </button>
             </div>
         </div>
