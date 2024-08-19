@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation'; // Používá se pro navigaci
+import { useRouter } from 'next/navigation';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTimes} from "@fortawesome/free-solid-svg-icons"; // Používá se pro navigaci
 
 interface Teacher {
     teacherId: number;
@@ -156,10 +158,10 @@ const ClassroomsTable: React.FC = () => {
                         <td className="p-2 md:table-cell">{classroom.students.length}</td>
                         <td className="p-2 md:table-cell">
                             <button
-                                className="bg-red-600 hover:bg-red-800 text-white font-bold py-1 px-2 rounded"
                                 onClick={() => handleDeleteClassroom(classroom.classRoomId)}
+                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded flex items-center justify-center"
                             >
-                                Vymazat
+                                <FontAwesomeIcon icon={faTimes} className="w-5 h-5"/>
                             </button>
                         </td>
                     </tr>
