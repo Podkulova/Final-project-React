@@ -85,6 +85,14 @@ const Login: React.FC = () => {
                     {loading ? 'Loading...' : 'Přihlásit se'}
                 </button>
             </form>
+            <div className="mt-4 text-center">
+                <p className="text-gray-300">Nemáte účet? <button
+                    className="text-blue-500 hover:text-blue-700 underline"
+                    onClick={() => router.push('/register')}
+                >
+                    Zaregistrujte se
+                </button></p>
+            </div>
         </div>
     );
 };

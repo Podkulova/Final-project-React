@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -35,7 +35,7 @@ const Register: React.FC = () => {
                 throw new Error('Registrace selhala');
             }
 
-            // Redirect to the login page or home page after successful registration
+            // Redirect to the login page after successful registration
             router.push('/login');
         } catch (error) {
             setError('Registrace selhala. Zkuste to prosím znovu.');
@@ -91,6 +91,14 @@ const Register: React.FC = () => {
                     {loading ? 'Loading...' : 'Registrovat se'}
                 </button>
             </form>
+            <div className="mt-4 text-center">
+                <p className="text-gray-300">Máte již účet? <button
+                    className="text-blue-500 hover:text-blue-700 underline"
+                    onClick={() => router.push('/login')}
+                >
+                    Přihlásit se
+                </button></p>
+            </div>
         </div>
     );
 };
