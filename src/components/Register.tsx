@@ -1,15 +1,12 @@
-'use client'; // This directive must be at the top
+"use client";
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-interface LoginResponse {
-    jwtToken: string;
-}
-
-const Login: React.FC = () => {
+const Register: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
@@ -19,8 +16,14 @@ const Login: React.FC = () => {
         setLoading(true);
         setError(null);
 
+        if (password !== confirmPassword) {
+            setError('Hesla se neshodují.');
+            setLoading(false);
+            return;
+        }
+
         try {
-            const response = await fetch('https://edupage.onrender.com/api/login', {
+            const response = await fetch('https://edupage.onrender.com/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -29,22 +32,14 @@ const Login: React.FC = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Invalid login credentials');
+                throw new Error('Registrace selhala');
             }
 
-            const data: LoginResponse = await response.json();
-
-            // Safely access localStorage
-            if (typeof window !== 'undefined') {
-                localStorage.setItem('token', data.jwtToken);
-                console.log('Token stored:', localStorage.getItem('token'));
-            }
-
-            // Redirect to the home page
-            router.push('/');
+            // Redirect to the login page or home page after successful registration
+            router.push('/login');
         } catch (error) {
-            setError('Přihlášení se nezdařilo. Zkontrolujte své údaje.');
-            console.error('Login failed:', error);
+            setError('Registrace selhala. Zkuste to prosím znovu.');
+            console.error('Registration failed:', error);
         } finally {
             setLoading(false);
         }
@@ -52,7 +47,7 @@ const Login: React.FC = () => {
 
     return (
         <div className="container mx-auto p-4 bg-gray-800 text-white rounded-lg">
-            <h2 className="text-2xl font-bold mb-4">Přihlášení</h2>
+            <h2 className="text-2xl font-bold mb-4">Registrace</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="email" className="block text-gray-300">Email</label>
@@ -76,17 +71,28 @@ const Login: React.FC = () => {
                         required
                     />
                 </div>
+                <div className="mb-4">
+                    <label htmlFor="confirmPassword" className="block text-gray-300">Potvrzení hesla</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                    />
+                </div>
                 {error && <div className="text-red-500 mb-4">{error}</div>}
                 <button
                     type="submit"
                     className={`py-2 px-4 rounded ${loading ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-800'} text-white font-bold`}
                     disabled={loading}
                 >
-                    {loading ? 'Loading...' : 'Přihlásit se'}
+                    {loading ? 'Loading...' : 'Registrovat se'}
                 </button>
             </form>
         </div>
     );
 };
 
-export default Login;
+export default Register;
