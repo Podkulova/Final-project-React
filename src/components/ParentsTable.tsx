@@ -58,7 +58,7 @@ const ParentsTable: React.FC = () => {
         const token = localStorage.getItem('token'); // Získání JWT tokenu z localStorage
 
         try {
-            const response = await fetch(`https://final-project-mig3.onrender.com/api/parent/${parentId}`, {
+            const response = await fetch(`https://final-project-mig3.onrender.com/api/parent/deleteParent/${parentId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}` // Přidání tokenu do hlavičky požadavku
