@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const Register: React.FC = () => {
+    const [firstName, setFirstName] = useState<string>('');
+    const [lastName, setLastName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -23,12 +25,12 @@ const Register: React.FC = () => {
         }
 
         try {
-            const response = await fetch('https://edupage.onrender.com/api/register', {
+            const response = await fetch('http://localhost:8080/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ firstName, lastName, email, password}),
             });
 
             if (!response.ok) {
@@ -49,6 +51,28 @@ const Register: React.FC = () => {
         <div className="container mx-auto p-4 bg-gray-800 text-white rounded-lg">
             <h2 className="text-2xl font-bold mb-4">Registrace</h2>
             <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <label htmlFor="firstName" className="block text-gray-300">Jméno</label>
+                    <input
+                        type="text"
+                        id="firstName"
+                        className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="lastName" className="block text-gray-300">Příjmení</label>
+                    <input
+                        type="text"
+                        id="lastName"
+                        className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                    />
+                </div>
                 <div className="mb-4">
                     <label htmlFor="email" className="block text-gray-300">Email</label>
                     <input

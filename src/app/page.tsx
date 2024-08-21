@@ -1,16 +1,31 @@
+"use client"; // Mark the component as a Client Component
+
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Head from 'next/head'; // Import komponenty Head
+import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../resources/styles/globals.css';
 
 export default function App() {
+    const router = useRouter(); // Initialize the router for navigation
+
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // Remove the JWT token from localStorage
+        router.push('/login'); // Redirect to the login page
+    };
+
     return (
         <div>
             {/* Navigační lišta */}
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <Link href="/" className="navbar-brand">Školní evidence</Link>
+                <button
+                    onClick={handleLogout}
+                    className="btn btn-danger ms-auto" // Use Bootstrap classes for styling
+                >
+                    Logout
+                </button>
             </nav>
 
             {/* Základní obsah pro testování */}

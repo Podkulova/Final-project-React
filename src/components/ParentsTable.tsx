@@ -28,7 +28,13 @@ const ParentsTable: React.FC = () => {
     useEffect(() => {
         const fetchParents = async () => {
             try {
-                const response = await fetch("https://edupage.onrender.com/api/parent");
+                const token = localStorage.getItem('token'); // Get JWT token from localStorage
+                const response = await fetch("http://localhost:8080/api/parent", {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Include token in the request headers
+                    }
+                });
+
                 if (!response.ok) {
                     throw new Error(`Error fetching data: ${response.statusText}`);
                 }

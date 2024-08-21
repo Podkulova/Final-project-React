@@ -26,7 +26,13 @@ const TeachersTable: React.FC = () => {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const response = await fetch("https://edupage.onrender.com/api/teacher");
+        const token = localStorage.getItem('token'); // Get JWT token from localStorage
+        const response = await fetch("http://localhost:8080/api/teacher", {
+          headers: {
+            'Authorization': `Bearer ${token}` // Include token in the request headers
+          }
+        });
+
         if (!response.ok) {
           throw new Error(`Chyba při načítání dat: ${response.statusText}`);
         }
@@ -77,9 +83,13 @@ const TeachersTable: React.FC = () => {
 
   const handleDeleteTeacher = async (teacherId: number) => {
     try {
-      const response = await fetch(`https://edupage.onrender.com/api/deleteTeacher/${teacherId}`, {
-        method: 'DELETE',
-      });
+         const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8080/api/teacher/deleteTeacher/${teacherId}`, {
+           method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Include token in the request headers
+                    }
+                });
 
       if (response.ok) {
         // Úspěšně vymazáno, obnovte seznam učitelů
