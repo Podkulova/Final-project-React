@@ -40,7 +40,7 @@ useEffect(() => {
     const fetchClassrooms = async () => {
         try {
             const token = localStorage.getItem('token'); // Get JWT token from localStorage
-            const response = await fetch("https://edupage.onrender.com/api/classroom", {
+            const response = await fetch("https://final-project-mig3.onrender.com/api/classroom", {
                 headers: {
                     'Authorization': `Bearer ${token}` // Include token in the request headers
                 }
@@ -67,7 +67,7 @@ useEffect(() => {
     const handleDeleteClassroom = async (classRoomId: number) => {
         try {
              const token = localStorage.getItem('token');
-            const response = await fetch(`https://edupage.onrender.com/api/classroom/${classRoomId}`, {
+            const response = await fetch(`https://final-project-mig3.onrender.com/api/classroom/${classRoomId}`, {
                method: 'DELETE',
                        headers: {
                            'Authorization': `Bearer ${token}` // Include token in the request headers

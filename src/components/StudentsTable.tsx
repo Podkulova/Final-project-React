@@ -46,7 +46,7 @@ const StudentsTable: React.FC = () => {
     const fetchStudents = async () => {
     try {
         const token = localStorage.getItem('token'); // Get the JWT token from localStorage
-        const response = await fetch("https://edupage.onrender.com/api/student", {
+        const response = await fetch("https://final-project-mig3.onrender.com/api/student", {
           headers: {
             'Authorization': `Bearer ${token}`, // Add the JWT token to the headers
             'Content-Type': 'application/json'
@@ -123,7 +123,7 @@ const StudentsTable: React.FC = () => {
 const handleDeleteStudent = async (studentId: number) => {
     try {
         const token = localStorage.getItem('token'); // Get JWT token from localStorage
-        const response = await fetch(`https://edupage.onrender.com/api/student/${studentId}`, {
+        const response = await fetch(`https://final-project-mig3.onrender.com/api/student/deleteStudent/${studentId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}` // Include token in the request headers

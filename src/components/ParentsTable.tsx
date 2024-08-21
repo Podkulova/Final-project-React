@@ -31,7 +31,7 @@ const ParentsTable: React.FC = () => {
         const fetchParents = async () => {
             try {
                 const token = localStorage.getItem('token'); // Získání JWT tokenu z localStorage
-                const response = await fetch("https://edupage.onrender.com/api/parent", {
+                const response = await fetch("https://final-project-mig3.onrender.com/api/parent", {
                     headers: {
                         'Authorization': `Bearer ${token}` // Přidání tokenu do hlavičky požadavku
                     }
@@ -58,7 +58,7 @@ const ParentsTable: React.FC = () => {
         const token = localStorage.getItem('token'); // Získání JWT tokenu z localStorage
 
         try {
-            const response = await fetch(`https://edupage.onrender.com/api/parent/${parentId}`, {
+            const response = await fetch(`https://final-project-mig3.onrender.com/api/parent/${parentId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}` // Přidání tokenu do hlavičky požadavku
