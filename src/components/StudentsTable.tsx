@@ -44,17 +44,23 @@ const StudentsTable: React.FC = () => {
 
   useEffect(() => {
     const fetchStudents = async () => {
-      try {
-        const response = await fetch("https://edupage.onrender.com/api/student");
+    try {
+        const token = localStorage.getItem('token'); // Get the JWT token from localStorage
+        const response = await fetch("https://edupage.onrender.com/api/student", {
+          headers: {
+            'Authorization': `Bearer ${token}`, // Add the JWT token to the headers
+            'Content-Type': 'application/json'
+          }
+        });
         if (!response.ok) {
           throw new Error(`Chyba při načítání dat: ${response.statusText}`);
         }
         const data = await response.json();
 
-        console.log("Načtená data studentů:", data); // Pro ladění: Výpis načtených dat
+        console.log("Načtená data studentů:", data);
 
-        // Zploštění struktury pro získání všech studentů
         const allStudents: Student[] = [];
+
 
         data.forEach((student: any) => {
           if (student.studentId) {
@@ -114,22 +120,26 @@ const StudentsTable: React.FC = () => {
     router.push('/'); // Přesměrování na hlavní stránku
   };
 
-  const handleDeleteStudent = async (studentId: number) => {
+const handleDeleteStudent = async (studentId: number) => {
     try {
-      const response = await fetch(`https://edupage.onrender.com/api/deleteStudent/${studentId}`, {
-        method: 'DELETE',
-      });
+        const token = localStorage.getItem('token'); // Get JWT token from localStorage
+        const response = await fetch(`https://edupage.onrender.com/api/student/${studentId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}` // Include token in the request headers
+            }
+        });
 
-      if (response.ok) {
-        // Úspěšně vymazáno, obnovte seznam studentů
-        setStudents(students.filter(student => student.studentId !== studentId));
-      } else {
-        console.error(`Chyba při mazání studenta: ${response.statusText}`);
-      }
+        if (response.ok) {
+            // Úspěšně vymazáno, obnovte seznam studentů
+            setStudents(students.filter(student => student.studentId !== studentId));
+        } else {
+            console.error(`Chyba při mazání studenta: ${response.statusText}`);
+        }
     } catch (error) {
-      console.error('Chyba při mazání studenta:', error);
+        console.error('Chyba při mazání studenta:', error);
     }
-  };
+};
 
   if (loading) {
     return <div className="text-white">Načítání...</div>;

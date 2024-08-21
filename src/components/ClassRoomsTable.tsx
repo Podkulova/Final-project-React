@@ -36,32 +36,43 @@ const ClassroomsTable: React.FC = () => {
     // Search state
     const [searchQuery, setSearchQuery] = useState<string>("");
 
-    useEffect(() => {
-        const fetchClassrooms = async () => {
-            try {
-                const response = await fetch("https://edupage.onrender.com/api/classroom");
-                if (!response.ok) {
-                    throw new Error(`Error fetching data: ${response.statusText}`);
+useEffect(() => {
+    const fetchClassrooms = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Get JWT token from localStorage
+            const response = await fetch("https://edupage.onrender.com/api/classroom", {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Include token in the request headers
                 }
-                const data = await response.json();
-                setClassrooms(data);
-            } catch (error) {
-                setError("Failed to fetch classroom data.");
-                console.error("Failed to fetch classroom data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+            });
 
-        fetchClassrooms();
-    }, []);
+            if (!response.ok) {
+                throw new Error(`Error fetching data: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            setClassrooms(data);
+        } catch (error) {
+            setError("Failed to fetch classroom data.");
+            console.error("Failed to fetch classroom data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchClassrooms();
+}, []);
 
     // Funkce pro mazání třídy
     const handleDeleteClassroom = async (classRoomId: number) => {
         try {
-            const response = await fetch(`https://edupage.onrender.com/api/deleteClassRoom/${classRoomId}`, {
-                method: 'DELETE',
-            });
+             const token = localStorage.getItem('token');
+            const response = await fetch(`https://edupage.onrender.com/api/classroom/${classRoomId}`, {
+               method: 'DELETE',
+                       headers: {
+                           'Authorization': `Bearer ${token}` // Include token in the request headers
+                       }
+                   });
 
             if (!response.ok) {
                 throw new Error(`Error deleting classroom: ${response.statusText}`);
