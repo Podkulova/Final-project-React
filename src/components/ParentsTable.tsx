@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation'; // Use this for Next.js 13 or later
+import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faTimes } from '@fortawesome/free-solid-svg-icons'; // Import ikon
 
 interface Parent {
     parentId: number;
@@ -16,33 +18,33 @@ const ParentsTable: React.FC = () => {
     const [parents, setParents] = useState<Parent[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter(); // Initialize the router
+    const router = useRouter(); // Inicializace routeru
 
-    // Pagination states
+    // Stavy pro stránkování
     const [currentPage, setCurrentPage] = useState<number>(1);
     const parentsPerPage = 10;
 
-    // Search state
+    // Stav pro vyhledávání
     const [searchQuery, setSearchQuery] = useState<string>("");
 
     useEffect(() => {
         const fetchParents = async () => {
             try {
-                const token = localStorage.getItem('token'); // Get JWT token from localStorage
-                const response = await fetch("http://localhost:8080/api/parent", {
+                const token = localStorage.getItem('token'); // Získání JWT tokenu z localStorage
+                const response = await fetch("https://edupage.onrender.com/api/parent", {
                     headers: {
-                        'Authorization': `Bearer ${token}` // Include token in the request headers
+                        'Authorization': `Bearer ${token}` // Přidání tokenu do hlavičky požadavku
                     }
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Error fetching data: ${response.statusText}`);
+                    throw new Error(`Chyba při načítání dat: ${response.statusText}`);
                 }
                 const data = await response.json();
                 setParents(data);
             } catch (error) {
-                setError("Failed to fetch parent data.");
-                console.error("Failed to fetch parent data:", error);
+                setError("Nepodařilo se načíst data o rodičích.");
+                console.error("Nepodařilo se načíst data o rodičích:", error);
             } finally {
                 setLoading(false);
             }
@@ -51,7 +53,31 @@ const ParentsTable: React.FC = () => {
         fetchParents();
     }, []);
 
-    // Filter parents based on search query
+    // Funkce pro mazání rodiče
+    const handleDeleteParent = async (parentId: number) => {
+        const token = localStorage.getItem('token'); // Získání JWT tokenu z localStorage
+
+        try {
+            const response = await fetch(`https://edupage.onrender.com/api/parent/${parentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}` // Přidání tokenu do hlavičky požadavku
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Chyba při mazání rodiče: ${response.statusText}`);
+            }
+
+            // Aktualizace seznamu rodičů po úspěšném smazání
+            setParents((prevParents) => prevParents.filter(parent => parent.parentId !== parentId));
+        } catch (error) {
+            console.error("Nepodařilo se smazat rodiče:", error);
+            setError("Nepodařilo se smazat rodiče.");
+        }
+    };
+
+    // Filtrování rodičů na základě vyhledávacího dotazu
     const filteredParents = parents.filter((parent) =>
         parent.parentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         parent.parentSurname.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -59,14 +85,14 @@ const ParentsTable: React.FC = () => {
         parent.parentPhone.includes(searchQuery)
     );
 
-    // Calculate the indexes of the first and last parent for the current page
+    // Výpočet indexů prvního a posledního rodiče pro aktuální stránku
     const indexOfLastParent = currentPage * parentsPerPage;
     const indexOfFirstParent = indexOfLastParent - parentsPerPage;
 
-    // Get the parents to be displayed on the current page
+    // Získání rodičů, kteří se zobrazí na aktuální stránce
     const currentParents = filteredParents.slice(indexOfFirstParent, indexOfLastParent);
 
-    // Calculate total pages
+    // Výpočet celkového počtu stránek
     const totalPages = Math.ceil(filteredParents.length / parentsPerPage);
 
     const handlePreviousPage = () => {
@@ -78,12 +104,11 @@ const ParentsTable: React.FC = () => {
     };
 
     const handleGoToMainPage = () => {
-        router.push('/'); // Redirect to the main page
+        router.push('/'); // Přesměrování na hlavní stránku
     };
 
-
     if (loading) {
-        return <div className="text-white">Loading...</div>;
+        return <div className="text-white">Načítání...</div>;
     }
 
     if (error) {
@@ -92,7 +117,7 @@ const ParentsTable: React.FC = () => {
 
     return (
         <div className="overflow-x-auto bg-gray-900 text-white p-4">
-            {/* Search Bar */}
+            {/* Vyhledávací pole */}
             <div className="mb-4">
                 <input
                     type="text"
@@ -101,7 +126,7 @@ const ParentsTable: React.FC = () => {
                     value={searchQuery}
                     onChange={(e) => {
                         setSearchQuery(e.target.value);
-                        setCurrentPage(1); // Reset to first page on new search
+                        setCurrentPage(1); // Při novém hledání reset na první stránku
                     }}
                 />
             </div>
@@ -113,6 +138,7 @@ const ParentsTable: React.FC = () => {
                     <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Jméno a příjmení</th>
                     <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Email</th>
                     <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Číslo</th>
+                    <th className="p-2 text-left font-medium text-gray-400 md:table-cell">Vymazat</th>
                 </tr>
                 </thead>
                 <tbody className="block md:table-row-group">
@@ -122,12 +148,23 @@ const ParentsTable: React.FC = () => {
                         <td className="p-2 md:table-cell">{parent.parentFullName}</td>
                         <td className="p-2 md:table-cell">{parent.parentEmail}</td>
                         <td className="p-2 md:table-cell">{parent.parentPhone}</td>
+                        <td className="p-2 md:table-cell">
+                            <button
+                                className="bg-red-600 hover:bg-red-800 text-white font-bold py-1 px-2 rounded"
+                                onClick={() => handleDeleteParent(parent.parentId)}
+                            >
+                                <FontAwesomeIcon
+                                    icon={faTimes}
+                                    className="mr-1"
+                                />
+                            </button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
             </table>
 
-            {/* Pagination Controls */}
+            {/* Ovládání stránkování */}
             <div className="flex justify-center mt-4">
                 <button
                     onClick={handlePreviousPage}
@@ -147,7 +184,7 @@ const ParentsTable: React.FC = () => {
                     Další
                 </button>
             </div>
-            {/* Button to redirect to the main page */}
+            {/* Tlačítko pro návrat na hlavní stránku */}
             <div className="flex justify-center mt-4">
                 <button
                     onClick={handleGoToMainPage}
