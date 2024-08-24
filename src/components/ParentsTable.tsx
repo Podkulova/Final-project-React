@@ -72,7 +72,7 @@ const ParentsTable: React.FC = () => {
             // Aktualizace seznamu rodičů po úspěšném smazání
             setParents((prevParents) => prevParents.filter(parent => parent.parentId !== parentId));
         } catch (error) {
-            console.error("Nepodařilo se smazat rodiče:", error);
+            console.error("Nepodařilo se smazat rodiče.", error);
             setError("Nepodařilo se smazat rodiče.");
         }
     };

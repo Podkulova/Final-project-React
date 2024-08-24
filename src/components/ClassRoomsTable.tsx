@@ -67,7 +67,7 @@ useEffect(() => {
     const handleDeleteClassroom = async (classRoomId: number) => {
         try {
              const token = localStorage.getItem('token');
-            const response = await fetch(`https://final-project-mig3.onrender.com/api/classroom/${classRoomId}`, {
+            const response = await fetch(`https://final-project-mig3.onrender.com/api/classroom/deleteClassRoom/${classRoomId}`, {
                method: 'DELETE',
                        headers: {
                            'Authorization': `Bearer ${token}` // Include token in the request headers
@@ -81,8 +81,8 @@ useEffect(() => {
             // Aktualizace stavu po úspěšném mazání
             setClassrooms(classrooms.filter(classroom => classroom.classRoomId !== classRoomId));
         } catch (error) {
-            setError("Failed to delete classroom.");
-            console.error("Failed to delete classroom:", error);
+            setError("Nepodařila se smazat třída.");
+            console.error("Nepodařila se smazat třída.", error);
         }
     };
 
