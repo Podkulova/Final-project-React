@@ -16,7 +16,7 @@ export default function App() {
         router.push('/login'); // Přesměrování na přihlašovací stránku
     };
 
-    const handleImageClick = (path) => {
+    const handleImageClick = (path: string) => {
         if (!token) {
             alert("Pro zobrazení je třeba se přihlásit."); // Zobrazení hlášky, pokud není uživatel přihlášený
         } else {
